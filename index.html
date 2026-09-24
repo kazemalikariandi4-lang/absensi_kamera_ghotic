@@ -1,968 +1,233 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    content="width=device-width, initial-scale=1.0"
   >
 
-  <title>ABSENSI // GOTHIC SCANNER</title>
+  <title>Gothic QR Scanner</title>
 
-  <!-- =====================================================
-       LIBRARY QR SCANNER
-       ===================================================== -->
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-
+  <script src="https://unpkg.com/html5-qrcode"></script>
 
   <style>
 
-    /* =====================================================
-       RESET
-    ===================================================== */
-
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
-
-    html,
     body {
-      width: 100%;
-      min-height: 100%;
+      margin: 0;
+      min-height: 100vh;
       background:
         radial-gradient(
           circle at top,
-          #251010 0%,
-          #100d0d 35%,
-          #070707 75%,
-          #000000 100%
+          #32153d,
+          #0a0710 48%,
+          #030205
         );
-      color: #eeeeee;
+      color: #f7eaff;
       font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-    }
-
-
-    body {
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-
-    /* =====================================================
-       BACKGROUND
-    ===================================================== */
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-
-      pointer-events: none;
-
-      background:
-        linear-gradient(
-          rgba(255,255,255,0.015) 1px,
-          transparent 1px
-        );
-
-      background-size: 100% 4px;
-
-      opacity: 0.25;
-
-      z-index: 0;
-    }
-
-
-    .page {
-      position: relative;
-      z-index: 1;
-
-      width: 100%;
-      min-height: 100vh;
-
+        Georgia,
+        "Times New Roman",
+        serif;
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-
-      padding: 18px 12px 30px;
+      padding: 20px;
     }
 
-
-    .app {
-      width: 100%;
-      max-width: 520px;
+    .container {
+      width: min(520px, 100%);
     }
 
-
-    /* =====================================================
-       HEADER
-    ===================================================== */
-
-    .brand {
+    .title {
       text-align: center;
-      padding: 8px 0 18px;
-    }
-
-
-    .brand-symbol {
-      width: 64px;
-      height: 64px;
-
-      margin: 0 auto 12px;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      border:
-        2px solid #8d1616;
-
-      background:
-        linear-gradient(
-          145deg,
-          #1d1d1d,
-          #090909
-        );
-
-      clip-path:
-        polygon(
-          50% 0%,
-          90% 25%,
-          100% 70%,
-          70% 100%,
-          30% 100%,
-          0% 70%,
-          10% 25%
-        );
-
-      box-shadow:
-        0 0 20px rgba(170,0,0,0.35);
-
       font-size: 28px;
-      font-weight: 900;
-      color: #d71919;
-    }
-
-
-    .brand h1 {
-      font-size: 24px;
-      letter-spacing: 3px;
-      font-weight: 900;
-      color: #f1f1f1;
-
-      text-shadow:
-        2px 2px 0 #400000,
-        0 0 12px rgba(180,0,0,0.4);
-    }
-
-
-    .brand p {
-      margin-top: 7px;
-
-      font-size: 11px;
-      letter-spacing: 3px;
-
-      color: #888888;
-      text-transform: uppercase;
-    }
-
-
-    /* =====================================================
-       MAIN CARD
-    ===================================================== */
-
-    .scanner-card {
-      width: 100%;
-
-      padding: 14px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #171717,
-          #0b0b0b
-        );
-
-      border:
-        1px solid #343434;
-
-      border-radius: 16px;
-
-      box-shadow:
-        0 18px 45px rgba(0,0,0,0.65),
-        0 0 30px rgba(130,0,0,0.12);
-
-      position: relative;
-
-      overflow: hidden;
-    }
-
-
-    .scanner-card::before {
-      content: "";
-
-      position: absolute;
-
-      left: 0;
-      top: 0;
-      right: 0;
-
-      height: 3px;
-
-      background:
-        linear-gradient(
-          90deg,
-          transparent,
-          #9e1111,
-          #e01919,
-          #9e1111,
-          transparent
-        );
-    }
-
-
-    /* =====================================================
-       STATUS
-    ===================================================== */
-
-    .status-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      padding: 4px 4px 12px;
-    }
-
-
-    .status-label {
-      font-size: 10px;
+      color: #e879f9;
       letter-spacing: 2px;
-      color: #777777;
-      text-transform: uppercase;
+      margin-top: 15px;
     }
 
-
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-
-      padding: 7px 10px;
-
-      border:
-        1px solid #343434;
-
-      border-radius: 999px;
-
-      background: #101010;
-
-      color: #aaaaaa;
-
-      font-size: 10px;
-      letter-spacing: 1px;
+    .subtitle {
+      text-align: center;
+      color: #a99bb4;
+      font-size: 12px;
+      margin-bottom: 20px;
     }
 
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-
-      border-radius: 50%;
-
-      background: #777777;
-    }
-
-
-    .status.ready {
-      color: #eeeeee;
-    }
-
-
-    .status.ready .status-dot {
-      background: #c91616;
-
+    .scanner {
+      background: #100b15;
+      border: 1px solid #59356e;
+      padding: 12px;
       box-shadow:
-        0 0 10px rgba(210,0,0,0.8);
+        0 0 40px rgba(168,85,247,.15);
     }
-
-
-    .status.success {
-      color: #eeeeee;
-    }
-
-
-    .status.success .status-dot {
-      background: #dddddd;
-
-      box-shadow:
-        0 0 10px rgba(255,255,255,0.5);
-    }
-
-
-    .status.error {
-      color: #ff5555;
-    }
-
-
-    .status.error .status-dot {
-      background: #ff2222;
-
-      box-shadow:
-        0 0 10px rgba(255,0,0,0.8);
-    }
-
-
-    /* =====================================================
-       CAMERA FRAME
-    ===================================================== */
-
-    .camera-wrapper {
-      position: relative;
-
-      width: 100%;
-
-      overflow: hidden;
-
-      border-radius: 12px;
-
-      border:
-        1px solid #3a3a3a;
-
-      background: #000000;
-
-      box-shadow:
-        inset 0 0 40px rgba(0,0,0,0.8);
-    }
-
 
     #reader {
       width: 100%;
-      min-height: 300px;
-
-      background: #000000;
     }
-
 
     #reader video {
       width: 100% !important;
-      height: auto !important;
-
-      object-fit: cover !important;
-
-      display: block;
+      border-radius: 0 !important;
     }
-
-
-    #reader img {
-      display: none !important;
-    }
-
-
-    /* =====================================================
-       SCAN CORNERS
-    ===================================================== */
-
-    .scan-overlay {
-      position: absolute;
-
-      inset: 0;
-
-      pointer-events: none;
-
-      z-index: 5;
-    }
-
-
-    .corner {
-      position: absolute;
-
-      width: 42px;
-      height: 42px;
-
-      border-color: #d11919;
-      border-style: solid;
-
-      filter:
-        drop-shadow(
-          0 0 5px rgba(220,0,0,0.65)
-        );
-    }
-
-
-    .corner.tl {
-      left: 22px;
-      top: 22px;
-
-      border-width: 3px 0 0 3px;
-    }
-
-
-    .corner.tr {
-      right: 22px;
-      top: 22px;
-
-      border-width: 3px 3px 0 0;
-    }
-
-
-    .corner.bl {
-      left: 22px;
-      bottom: 22px;
-
-      border-width: 0 0 3px 3px;
-    }
-
-
-    .corner.br {
-      right: 22px;
-      bottom: 22px;
-
-      border-width: 0 3px 3px 0;
-    }
-
-
-    .scan-line {
-      position: absolute;
-
-      left: 28px;
-      right: 28px;
-
-      top: 50%;
-
-      height: 2px;
-
-      background:
-        linear-gradient(
-          90deg,
-          transparent,
-          #d71919,
-          #ffffff,
-          #d71919,
-          transparent
-        );
-
-      box-shadow:
-        0 0 12px rgba(220,0,0,0.9);
-
-      animation:
-        scanMove 2.4s ease-in-out infinite;
-    }
-
-
-    @keyframes scanMove {
-
-      0% {
-        transform: translateY(-105px);
-        opacity: 0.2;
-      }
-
-      50% {
-        opacity: 1;
-      }
-
-      100% {
-        transform: translateY(105px);
-        opacity: 0.2;
-      }
-
-    }
-
-
-    /* =====================================================
-       INSTRUCTION
-    ===================================================== */
-
-    .instruction {
-      text-align: center;
-
-      padding: 14px 6px 4px;
-
-      color: #8d8d8d;
-
-      font-size: 12px;
-
-      line-height: 1.6;
-    }
-
-
-    .instruction strong {
-      display: block;
-
-      color: #eeeeee;
-
-      font-size: 13px;
-
-      letter-spacing: 0.5px;
-
-      margin-bottom: 2px;
-    }
-
-
-    /* =====================================================
-       RESULT
-    ===================================================== */
 
     .result {
-      margin-top: 14px;
-
-      padding: 14px;
-
-      border:
-        1px solid #343434;
-
-      border-radius: 12px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #151515,
-          #0b0b0b
-        );
-
-      display: none;
+      margin-top: 15px;
+      border: 1px solid #3f2850;
+      background: #130c19;
+      padding: 15px;
+      min-height: 100px;
     }
 
-
-    .result.show {
-      display: block;
-      animation:
-        resultIn 0.25s ease;
+    .success {
+      color: #43e6a4;
     }
 
-
-    @keyframes resultIn {
-
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
+    .error {
+      color: #ff6680;
     }
 
-
-    .result-title {
-      color: #d71919;
-
-      font-size: 10px;
-
-      letter-spacing: 2px;
-
-      text-transform: uppercase;
-
-      margin-bottom: 8px;
+    .warning {
+      color: #e8c875;
     }
 
-
-    .result-name {
-      color: #ffffff;
-
-      font-size: 20px;
-
-      font-weight: 800;
-
-      margin-bottom: 4px;
+    .student {
+      font-size: 22px;
+      color: #e879f9;
+      margin-bottom: 5px;
     }
 
-
-    .result-detail {
-      color: #999999;
-
-      font-size: 12px;
-
+    .detail {
+      color: #aaa;
+      font-size: 13px;
       line-height: 1.7;
     }
 
-
-    /* =====================================================
-       BUTTON
-    ===================================================== */
-
-    .button-area {
-      display: flex;
-
-      gap: 8px;
-
-      margin-top: 14px;
-    }
-
-
     button {
-      border: 0;
-
+      width: 100%;
+      margin-top: 12px;
+      padding: 13px;
+      border: 1px solid #694084;
+      background: #241230;
+      color: #f5eaff;
+      font-family: inherit;
       cursor: pointer;
-
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
     }
 
-
-    .btn {
-      flex: 1;
-
-      min-height: 45px;
-
-      border-radius: 10px;
-
-      font-size: 11px;
-
-      font-weight: 800;
-
-      letter-spacing: 1.5px;
-
-      text-transform: uppercase;
-
-      transition:
-        transform 0.15s ease,
-        opacity 0.15s ease;
+    button:hover {
+      background: #341746;
     }
 
-
-    .btn:active {
-      transform: scale(0.97);
+    .loading {
+      color: #c4a1ff;
     }
-
-
-    .btn-primary {
-      background:
-        linear-gradient(
-          145deg,
-          #b31313,
-          #650909
-        );
-
-      color: #ffffff;
-
-      box-shadow:
-        0 5px 18px
-        rgba(150,0,0,0.3);
-    }
-
-
-    .btn-secondary {
-      background: #1c1c1c;
-
-      color: #cccccc;
-
-      border:
-        1px solid #3a3a3a;
-    }
-
-
-    .btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-
-    /* =====================================================
-       FOOTER
-    ===================================================== */
-
-    .footer {
-      text-align: center;
-
-      padding: 18px 0 0;
-
-      color: #505050;
-
-      font-size: 9px;
-
-      letter-spacing: 2px;
-
-      text-transform: uppercase;
-    }
-
-
-    /* =====================================================
-       MOBILE
-    ===================================================== */
-
-    @media (max-width: 480px) {
-
-      .page {
-        padding:
-          10px
-          9px
-          22px;
-      }
-
-
-      .brand {
-        padding-top: 6px;
-      }
-
-
-      .brand-symbol {
-        width: 55px;
-        height: 55px;
-
-        font-size: 24px;
-      }
-
-
-      .brand h1 {
-        font-size: 19px;
-        letter-spacing: 2px;
-      }
-
-
-      .brand p {
-        font-size: 9px;
-        letter-spacing: 2px;
-      }
-
-
-      .scanner-card {
-        padding: 10px;
-        border-radius: 14px;
-      }
-
-
-      #reader {
-        min-height: 270px;
-      }
-
-
-      .corner {
-        width: 34px;
-        height: 34px;
-      }
-
-
-      .corner.tl {
-        left: 17px;
-        top: 17px;
-      }
-
-
-      .corner.tr {
-        right: 17px;
-        top: 17px;
-      }
-
-
-      .corner.bl {
-        left: 17px;
-        bottom: 17px;
-      }
-
-
-      .corner.br {
-        right: 17px;
-        bottom: 17px;
-      }
-
-    }
-
 
   </style>
 
 </head>
 
-
 <body>
 
-  <div class="page">
+<div class="container">
 
-    <main class="app">
+  <div class="title">
+    ☾ GOTHIC QR SCANNER
+  </div>
 
+  <div class="subtitle">
+    SCANNER ABSENSI SISWA
+  </div>
 
-      <!-- =================================================
-           HEADER
-      ================================================== -->
+  <div class="scanner">
 
-      <header class="brand">
-
-        <div class="brand-symbol">
-          QR
-        </div>
-
-        <h1>
-          ABSENSI // GOTHIC
-        </h1>
-
-        <p>
-          Secure QR Attendance Scanner
-        </p>
-
-      </header>
-
-
-      <!-- =================================================
-           SCANNER
-      ================================================== -->
-
-      <section class="scanner-card">
-
-
-        <div class="status-row">
-
-          <span class="status-label">
-            CAMERA STATUS
-          </span>
-
-          <span
-            id="status"
-            class="status"
-          >
-
-            <span
-              id="statusDot"
-              class="status-dot"
-            ></span>
-
-            <span id="statusText">
-              MEMULAI...
-            </span>
-
-          </span>
-
-        </div>
-
-
-        <div class="camera-wrapper">
-
-          <div id="reader"></div>
-
-
-          <div class="scan-overlay">
-
-            <div class="corner tl"></div>
-
-            <div class="corner tr"></div>
-
-            <div class="corner bl"></div>
-
-            <div class="corner br"></div>
-
-            <div class="scan-line"></div>
-
-          </div>
-
-        </div>
-
-
-        <div class="instruction">
-
-          <strong>
-            Arahkan QR siswa ke kamera
-          </strong>
-
-          Pastikan kode QR berada di dalam area pemindaian.
-
-        </div>
-
-
-        <!-- =================================================
-             RESULT
-        ================================================== -->
-
-        <div
-          id="result"
-          class="result"
-        >
-
-          <div
-            id="resultTitle"
-            class="result-title"
-          >
-            HASIL SCAN
-          </div>
-
-          <div
-            id="resultName"
-            class="result-name"
-          >
-            -
-          </div>
-
-          <div
-            id="resultDetail"
-            class="result-detail"
-          >
-            -
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
-             BUTTON
-        ================================================== -->
-
-        <div class="button-area">
-
-          <button
-            id="restartBtn"
-            class="btn btn-primary"
-            type="button"
-          >
-            MULAI KAMERA
-          </button>
-
-          <button
-            id="closeBtn"
-            class="btn btn-secondary"
-            type="button"
-          >
-            TUTUP
-          </button>
-
-        </div>
-
-
-      </section>
-
-
-      <footer class="footer">
-        ABSENSI QR // GOTHIC SYSTEM
-      </footer>
-
-
-    </main>
+    <div id="reader"></div>
 
   </div>
 
+  <div
+    id="result"
+    class="result"
+  >
+    <div class="loading">
+      Arahkan kamera ke QR Code siswa.
+    </div>
+  </div>
 
-  <script>
+  <button
+    onclick="startScanner()"
+  >
+    ◉ AKTIFKAN KAMERA
+  </button>
 
-    /* =====================================================
-       KONFIGURASI
-    ===================================================== */
+</div>
 
-    const CAMERA_CONFIG = {
+
+<script>
+
+  /*
+   * ===================================================
+   * URL GOOGLE APPS SCRIPT
+   * ===================================================
+   *
+   * GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA.
+   *
+   * Contoh:
+   *
+   * const APPS_SCRIPT_URL =
+   *   'https://script.google.com/macros/s/XXXX/exec';
+   *
+   */
+
+  const APPS_SCRIPT_URL =
+    'GANTI_DENGAN_URL_WEB_APP_GOOGLE_APPS_SCRIPT';
+
+
+  let scanner = null;
+
+  let locked = false;
+
+
+
+  /* ===================================================
+     START SCANNER
+     =================================================== */
+
+  function startScanner() {
+
+    if (scanner) {
+
+      try {
+        scanner.clear();
+      } catch(e) {}
+
+    }
+
+
+    scanner =
+      new Html5Qrcode(
+        "reader"
+      );
+
+
+    const config = {
 
       fps: 10,
 
       qrbox: function(
-        viewfinderWidth,
-        viewfinderHeight
+        width,
+        height
       ) {
 
-        const minEdge =
-          Math.min(
-            viewfinderWidth,
-            viewfinderHeight
-          );
-
         const size =
-          Math.floor(
-            minEdge * 0.68
-          );
+          Math.min(
+            width,
+            height
+          ) * 0.72;
 
         return {
           width: size,
@@ -976,704 +241,246 @@
     };
 
 
-    /* =====================================================
-       VARIABLE
-    ===================================================== */
+    scanner.start(
 
-    let scanner = null;
+      {
+        facingMode: "environment"
+      },
 
-    let scannerRunning = false;
+      config,
 
-    let scanLocked = false;
+      onScanSuccess,
 
-    let lastScan = '';
-
-    let lastScanTime = 0;
-
-
-    /* =====================================================
-       ELEMENT
-    ===================================================== */
-
-    const statusElement =
-      document.getElementById(
-        'status'
-      );
-
-
-    const statusText =
-      document.getElementById(
-        'statusText'
-      );
-
-
-    const statusDot =
-      document.getElementById(
-        'statusDot'
-      );
-
-
-    const resultElement =
-      document.getElementById(
-        'result'
-      );
-
-
-    const resultTitle =
-      document.getElementById(
-        'resultTitle'
-      );
-
-
-    const resultName =
-      document.getElementById(
-        'resultName'
-      );
-
-
-    const resultDetail =
-      document.getElementById(
-        'resultDetail'
-      );
-
-
-    const restartButton =
-      document.getElementById(
-        'restartBtn'
-      );
-
-
-    const closeButton =
-      document.getElementById(
-        'closeBtn'
-      );
-
-
-    /* =====================================================
-       STATUS
-    ===================================================== */
-
-    function setStatus(
-      text,
-      type
-    ) {
-
-      statusText.textContent =
-        text;
-
-
-      statusElement.className =
-        'status';
-
-
-      if (type) {
-
-        statusElement.classList.add(
-          type
-        );
-
+      function(errorMessage) {
+        // Abaikan frame yang belum terbaca.
       }
 
-    }
-
-
-    /* =====================================================
-       HASIL
-    ===================================================== */
-
-    function showResult(
-      title,
-      name,
-      detail
-    ) {
-
-      resultTitle.textContent =
-        title || 'HASIL SCAN';
-
-
-      resultName.textContent =
-        name || '-';
-
-
-      resultDetail.textContent =
-        detail || '-';
-
-
-      resultElement.classList.add(
-        'show'
-      );
-
-    }
-
-
-    function clearResult() {
-
-      resultElement.classList.remove(
-        'show'
-      );
-
-      resultName.textContent =
-        '-';
-
-      resultDetail.textContent =
-        '-';
-
-    }
-
-
-    /* =====================================================
-       KIRIM HASIL KE WINDOW UTAMA
-       ===================================================== */
-
-    function sendToParent(
-      qr
-    ) {
-
-      /*
-       * Ini adalah bagian penting.
-       *
-       * Code.gs / index.html utama menerima:
-       *
-       * {
-       *   type: 'ABSENSI_QR',
-       *   qr: 'KODE_QR'
-       * }
-       *
-       */
-
-      if (
-        window.opener &&
-        !window.opener.closed
-      ) {
-
-        window.opener.postMessage(
-
-          {
-            type: 'ABSENSI_QR',
-            qr: qr
-          },
-
-          '*'
-
-        );
-
-        return true;
-
-      }
-
-
-      return false;
-
-    }
-
-
-    /* =====================================================
-       BERHASIL SCAN
-    ===================================================== */
-
-    function onScanSuccess(
-      decodedText
-    ) {
-
-      const qr =
-        String(
-          decodedText || ''
-        ).trim();
-
-
-      if (!qr) {
-        return;
-      }
-
-
-      const now =
-        Date.now();
-
-
-      /*
-       * Cegah QR yang sama terkirim
-       * berkali-kali dalam waktu singkat.
-       */
-
-      if (
-
-        scanLocked ||
-
-        (
-
-          qr === lastScan &&
-
-          now - lastScanTime <
-          2500
-
-        )
-
-      ) {
-
-        return;
-
-      }
-
-
-      scanLocked = true;
-
-      lastScan = qr;
-
-      lastScanTime = now;
-
-
-      setStatus(
-        'QR TERDETEKSI',
-        'success'
-      );
-
+    ).catch(function(error) {
 
       showResult(
-        'QR BERHASIL DIBACA',
-        'Kode QR Terdeteksi',
-        qr
+        '<div class="error">' +
+        'Kamera tidak dapat dibuka.<br><br>' +
+        'Pastikan izin kamera diberikan pada browser.' +
+        '</div>'
+      );
+
+    });
+
+  }
+
+
+
+  /* ===================================================
+     QR SUCCESS
+     =================================================== */
+
+  function onScanSuccess(
+    decodedText
+  ) {
+
+    if (locked) return;
+
+    locked = true;
+
+
+    showResult(
+      '<div class="loading">' +
+      'QR terbaca. Menghubungkan ke database...' +
+      '</div>'
+    );
+
+
+    /*
+     * Panggil Web App Google Apps Script.
+     */
+    const url =
+      APPS_SCRIPT_URL +
+      '?action=scan&qr=' +
+      encodeURIComponent(
+        decodedText
       );
 
 
-      const sent =
-        sendToParent(
-          qr
-        );
+    fetch(
+      url,
+      {
+        method: 'GET',
+        mode: 'cors'
+      }
+    )
+    .then(function(response) {
 
+      return response.json();
 
-      if (sent) {
+    })
+    .then(function(data) {
 
-        showResult(
-          'DATA TERKIRIM',
-          'QR Berhasil Dikirim',
-          'Kembali ke halaman absensi untuk melihat hasil.'
-        );
+      if (data.success) {
+
+        showResult(`
+
+          <div class="success">
+            ✓ ABSENSI BERHASIL
+          </div>
+
+          <br>
+
+          <div class="student">
+            ${escapeHtml(data.siswa.nama)}
+          </div>
+
+          <div class="detail">
+
+            NIS:
+            ${escapeHtml(data.siswa.nis)}
+            <br>
+
+            Kelas:
+            ${escapeHtml(data.siswa.nama_kelas)}
+            <br>
+
+            Tanggal:
+            ${escapeHtml(data.tanggal)}
+            <br>
+
+            Waktu:
+            ${escapeHtml(data.waktu)}
+            <br>
+
+            Status:
+            <strong>
+              ${escapeHtml(data.status)}
+            </strong>
+
+          </div>
+
+        `);
+
+      } else {
+
+        if (data.duplicate) {
+
+          showResult(`
+
+            <div class="warning">
+              ⚠ ABSENSI SUDAH TERCATAT
+            </div>
+
+            <br>
+
+            <div class="student">
+              ${escapeHtml(data.siswa.nama)}
+            </div>
+
+            <div class="detail">
+
+              NIS:
+              ${escapeHtml(data.siswa.nis)}
+              <br>
+
+              Kelas:
+              ${escapeHtml(data.siswa.nama_kelas)}
+              <br>
+
+              Waktu sebelumnya:
+              ${escapeHtml(data.waktu)}
+
+            </div>
+
+          `);
+
+        } else {
+
+          showResult(`
+
+            <div class="error">
+              ✕ ${escapeHtml(data.message)}
+            </div>
+
+          `);
+
+        }
 
       }
 
-      else {
-
-        showResult(
-          'QR TERBACA',
-          'Kode QR Ditemukan',
-          'Scanner dibuka tanpa halaman absensi utama.'
-        );
-
-      }
-
+    })
+    .catch(function(error) {
 
       /*
-       * Beri jeda agar QR yang sama tidak
-       * langsung terbaca berkali-kali.
+       * Fallback melalui JSONP-style redirect
+       * tidak digunakan karena keamanan.
        */
+      showResult(`
+
+        <div class="error">
+          Gagal menghubungi database.
+        </div>
+
+        <div class="detail">
+          ${escapeHtml(error.message)}
+        </div>
+
+      `);
+
+    })
+    .finally(function() {
 
       setTimeout(
         function() {
-
-          scanLocked = false;
-
-          if (scannerRunning) {
-
-            setStatus(
-              'SIAP SCAN',
-              'ready'
-            );
-
-          }
-
+          locked = false;
         },
-
-        2200
-
+        2500
       );
 
+    });
+
+  }
+
+
+
+  /* ===================================================
+     RESULT
+     =================================================== */
+
+  function showResult(html) {
+
+    document.getElementById(
+      'result'
+    ).innerHTML = html;
+
+  }
+
+
+
+  function escapeHtml(value) {
+
+    if (
+      value === null ||
+      value === undefined
+    ) return '';
+
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+  }
+
+
+
+  /*
+   * Aktifkan kamera otomatis.
+   */
+  window.addEventListener(
+    'load',
+    function() {
+      startScanner();
     }
+  );
 
-
-    /* =====================================================
-       ERROR SCAN
-    ===================================================== */
-
-    function onScanFailure(
-      errorMessage
-    ) {
-
-      /*
-       * Error seperti QR belum terbaca
-       * sengaja tidak ditampilkan ke user.
-       *
-       * html5-qrcode akan terus mencari QR.
-       */
-
-    }
-
-
-    /* =====================================================
-       START CAMERA
-    ===================================================== */
-
-    async function startScanner() {
-
-      if (scannerRunning) {
-
-        return;
-
-      }
-
-
-      clearResult();
-
-
-      setStatus(
-        'MEMINTA KAMERA...',
-        ''
-      );
-
-
-      restartButton.disabled =
-        true;
-
-
-      try {
-
-        /*
-         * Buat instance baru.
-         */
-
-        scanner =
-          new Html5Qrcode(
-            'reader'
-          );
-
-
-        /*
-         * Kamera belakang.
-         */
-
-        const cameraConfig = {
-
-          facingMode: {
-            exact: 'environment'
-          }
-
-        };
-
-
-        await scanner.start(
-
-          cameraConfig,
-
-          CAMERA_CONFIG,
-
-          onScanSuccess,
-
-          onScanFailure
-
-        );
-
-
-        scannerRunning = true;
-
-
-        setStatus(
-          'SIAP SCAN',
-          'ready'
-        );
-
-
-        restartButton.textContent =
-          'KAMERA AKTIF';
-
-
-      }
-
-      catch (error) {
-
-        console.error(
-          'Camera error:',
-          error
-        );
-
-
-        /*
-         * Jika facingMode exact environment
-         * gagal pada perangkat tertentu,
-         * coba environment biasa.
-         */
-
-        try {
-
-          if (scanner) {
-
-            try {
-
-              await scanner.clear();
-
-            } catch (e) {}
-
-          }
-
-
-          scanner =
-            new Html5Qrcode(
-              'reader'
-            );
-
-
-          await scanner.start(
-
-            {
-              facingMode:
-                'environment'
-            },
-
-            CAMERA_CONFIG,
-
-            onScanSuccess,
-
-            onScanFailure
-
-          );
-
-
-          scannerRunning = true;
-
-
-          setStatus(
-            'SIAP SCAN',
-            'ready'
-          );
-
-
-          restartButton.textContent =
-            'KAMERA AKTIF';
-
-
-        }
-
-        catch (secondError) {
-
-          console.error(
-            'Camera fallback error:',
-            secondError
-          );
-
-
-          scannerRunning = false;
-
-
-          setStatus(
-            'KAMERA GAGAL',
-            'error'
-          );
-
-
-          showResult(
-
-            'KAMERA TIDAK DAPAT DIAKTIFKAN',
-
-            'Permission diperlukan',
-
-            'Izinkan akses kamera pada browser, lalu tekan MULAI KAMERA kembali.'
-
-          );
-
-        }
-
-      }
-
-      finally {
-
-        restartButton.disabled =
-          false;
-
-      }
-
-    }
-
-
-    /* =====================================================
-       STOP CAMERA
-    ===================================================== */
-
-    async function stopScanner() {
-
-      if (!scanner) {
-
-        scannerRunning =
-          false;
-
-        return;
-
-      }
-
-
-      try {
-
-        if (scannerRunning) {
-
-          await scanner.stop();
-
-        }
-
-      }
-
-      catch (error) {
-
-        console.warn(
-          'Stop camera:',
-          error
-        );
-
-      }
-
-
-      try {
-
-        await scanner.clear();
-
-      }
-
-      catch (error) {
-
-        console.warn(
-          'Clear scanner:',
-          error
-        );
-
-      }
-
-
-      scanner = null;
-
-      scannerRunning = false;
-
-      scanLocked = false;
-
-
-      setStatus(
-        'KAMERA BERHENTI',
-        ''
-      );
-
-
-      restartButton.textContent =
-        'MULAI KAMERA';
-
-    }
-
-
-    /* =====================================================
-       RESTART
-    ===================================================== */
-
-    restartButton.addEventListener(
-      'click',
-      async function() {
-
-        if (scannerRunning) {
-
-          await stopScanner();
-
-          return;
-
-        }
-
-
-        await startScanner();
-
-      }
-    );
-
-
-    /* =====================================================
-       CLOSE
-    ===================================================== */
-
-    closeButton.addEventListener(
-      'click',
-      async function() {
-
-        await stopScanner();
-
-
-        /*
-         * Jika halaman kamera dibuka oleh
-         * window.open(), tutup halaman.
-         */
-
-        if (
-          window.opener &&
-          !window.opener.closed
-        ) {
-
-          window.close();
-
-          return;
-
-        }
-
-
-        /*
-         * Jika browser tidak mengizinkan
-         * window.close(), tampilkan status.
-         */
-
-        setStatus(
-          'KAMERA DAPAT DITUTUP',
-          ''
-        );
-
-      }
-    );
-
-
-    /* =====================================================
-       START OTOMATIS
-    ===================================================== */
-
-    window.addEventListener(
-      'load',
-      function() {
-
-        setTimeout(
-          function() {
-
-            startScanner();
-
-          },
-          400
-        );
-
-      }
-    );
-
-
-    /* =====================================================
-       PAGE VISIBILITY
-    ===================================================== */
-
-    document.addEventListener(
-      'visibilitychange',
-      async function() {
-
-        if (
-          document.hidden
-        ) {
-
-          if (scannerRunning) {
-
-            await stopScanner();
-
-          }
-
-        }
-
-      }
-    );
-
-
-  </script>
+</script>
 
 </body>
 </html>
